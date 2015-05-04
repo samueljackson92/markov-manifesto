@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+        <link href="style.css" rel="stylesheet">
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="markov.js", type="text/javascript"></script>
+        <script type="text/javascript">
+            $.get('corpus.txt', function(data) {
+               var prefixSize = 2;
+               var numOfPolicies = 10;
+               var words = data.split(" ");
+               var text = makePolicies(words, prefixSize, numOfPolicies);
+               $("#manifesto").html(text);
+            });
+
+            function makePolicies(words, prefixSize, numOfPolicies)
+            {
+                var table = buildTable(words, prefixSize);
+
+                var text = "<ul>";
+                for (var i=0; i<numOfPolicies; i++){
+                    var policy = generateRandomParagraph(table, 70, 100);
+                    text += "<li>" + policy + "</li>";
+                }
+                text += "</ul>";
+
+                return text;
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Random Party Manifesto</h1>
+            <div id="manifesto">
+            </div>
+        </div>
+    </body>
+</html>
