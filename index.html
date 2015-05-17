@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <title>Markov Manifesto</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
@@ -9,33 +10,104 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="markov.js", type="text/javascript"></script>
         <script type="text/javascript">
-            $.get('corpus.txt', function(data) {
-               var prefixSize = 2;
-               var numOfPolicies = 10;
-               var words = data.split(" ");
-               var text = makePolicies(words, prefixSize, numOfPolicies);
-               $("#manifesto").html(text);
+        $(document).ready(function(){
+            $("#generate").click(function(){
+                $("#loading").css("visibility","visible");;
+                $.get('corpus.txt', function(data) {
+                   var prefixSize = getSelectedItem("#prefix-size");
+                   var numOfPolicies = getSelectedItem("#num-policies");
+                   var words = data.split(" ");
+                   var minPara = getSelectedItem("#min-size");
+                   var maxPara = getSelectedItem("#max-size");
+                   var text = makePolicies(words, prefixSize, numOfPolicies, minPara, maxPara);
+                   $("#loading").css("visibility","hidden");;
+                   $("#manifesto").html(text);
+                });
             });
+        });
 
-            function makePolicies(words, prefixSize, numOfPolicies)
-            {
-                var table = buildTable(words, prefixSize);
+        function getSelectedItem(name)
+        {
+            return parseInt($(name).find(":selected").val());
+        }
 
-                var text = "<ul>";
-                for (var i=0; i<numOfPolicies; i++){
-                    var policy = generateRandomParagraph(table, 70, 100);
-                    text += "<li>" + policy + "</li>";
-                }
-                text += "</ul>";
+        /* Make and unordered list of polcies
+        */
+        function makePolicies(words, prefixSize, numOfPolicies, minPara, maxPara)
+        {
+            var table = buildTable(words, prefixSize);
+            var text = "<ul>";
 
-                return text;
+            for (var i=0; i<numOfPolicies; i++){
+                var policy = generateRandomParagraph(table, minPara, maxPara);
+                text += "<li>" + policy + "</li>";
             }
+
+            text += "</ul>";
+            return text;
+        }
         </script>
     </head>
     <body>
         <div class="container">
-            <h1>Random Party Manifesto</h1>
+            <h1>Markov Manifesto</h1>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    A manifesto randomly generated from the manifestos of five of the major UK political parties (Labour, Tory, Lib Dems, Green and UKIP). Because, heck, it's not like anyone can tell the difference between a bunch of randomly generated garbage and the output of a Markov random chain anyway!
+                    <br / >
+                    <br / >
+                    Made with love by <a href="http://twitter.com/sljack92">@sljack92</a>. Hosted on <a href="http://github.com/samueljackson92/markov-manifesto/">Github</a>. Results may vary.
+                </div>
+                <div id="params-container">
+                    <form class="form-inline">
+                      <div class="form-group">
+                          <label for="num-policies">Policies</label>
+                          <select class="form-control" id="num-policies">
+                            <option>5</option>
+                            <option selected="True">10</option>
+                            <option>20</option>
+                            <option>30</option>
+                            <option>50</option>
+                          </select>
+                      </div>
+                      <div class="form-group">
+                          <label for="prefix-size">Prefix Size</label>
+                          <select class="form-control" id="prefix-size">
+                            <option>1</option>
+                            <option selected="True">2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </select>
+                      </div>
+                      <div class="form-group">
+                          <label for="min-size">Min Size</label>
+                          <select class="form-control" id="min-size">
+                            <option>10</option>
+                            <option>30</option>
+                            <option>50</option>
+                            <option selected="True">70</option>
+                            <option>80</option>
+                          </select>
+                      </div>
+                      <div class="form-group">
+                          <label for="max-size">Min Size</label>
+                          <select class="form-control" id="max-size">
+                            <option>80</option>
+                            <option>90</option>
+                            <option selected="True">100</option>
+                            <option>120</option>
+                            <option>140</option>
+                          </select>
+                      </div>
+                      <button id="generate" type="button" class="btn btn-default">Generate</button>
+                    </form>
+                </div>
+            </div>
             <div id="manifesto">
+                <div id="loading">
+                    <span class="glyphicon glyphicon-refresh spinning"></span>
+                </div>
             </div>
         </div>
     </body>
