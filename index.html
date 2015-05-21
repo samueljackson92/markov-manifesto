@@ -12,6 +12,7 @@
         <script type="text/javascript">
         $(document).ready(function(){
             $("#generate").click(function(){
+                $("#manifesto").html("");
                 $("#loading").css("visibility","visible");;
                 $.get('corpus.txt', function(data) {
                    var prefixSize = getSelectedItem("#prefix-size");
@@ -105,9 +106,9 @@
                 </div>
             </div>
             <div id="manifesto">
-                <div id="loading">
-                    <span class="glyphicon glyphicon-refresh spinning"></span>
-                </div>
+            </div>
+            <div id="loading">
+                <span class="glyphicon glyphicon-refresh spinning"></span>
             </div>
         </div>
     </body>
